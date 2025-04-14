@@ -514,19 +514,19 @@
         #rest-menu {
             display: none;
             background-color: white;
-            padding: 30px;
+            padding: 15px;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 500px;
+            width: 85%;
+            max-width: 400px;
             position: relative;
-            margin: 0;
+            margin: 15px;
         }
 
         .menu-options {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 8px;
         }
 
         .menu-options h3 {
@@ -536,7 +536,7 @@
 
         .option-group {
             display: flex;
-            gap: 10px;
+            gap: 6px;
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -544,14 +544,17 @@
         .option-group button {
             flex: 1;
             min-width: 120px;
+            padding: 10px;
+            font-size: 0.9em;
         }
 
         #submit-rest-button {
-            margin-top: 20px;
+            margin-top: 15px;
             width: 100%;
             background-color: var(--button-color);
+            color: white;
             font-size: 1.1em;
-            padding: 15px;
+            padding: 12px;
         }
 
         /* Regular success popup styles */
@@ -683,9 +686,9 @@
             }
 
             #rest-menu {
-                width: 85%;
-                max-width: none;
-                margin: 10px auto;
+                width: 80%;
+                padding: 12px;
+                margin: 8px auto;
             }
 
             .option-group {
@@ -705,14 +708,15 @@
             #submit-rest-button {
                 position: sticky;
                 bottom: 0;
-                background: white;
-                padding: 15px;
+                background-color: var(--button-color);
+                color: white;
+                padding: 12px;
                 margin: 0;
                 border-top: 1px solid #eee;
             }
 
             .menu-options {
-                padding-bottom: 60px; /* Space for sticky submit button */
+                padding-bottom: 50px;
             }
         }
 
@@ -729,38 +733,36 @@
             max-height: 80vh;
         }
 
-        /* Rest popup improvements */
-        #rest-menu {
-            max-height: 80vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 20px;
-            margin: 20px;
-        }
-
-        .menu-options {
-            gap: 10px;
-        }
-
-        .option-group {
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .option-group button {
-            padding: 12px;
-            font-size: 0.95em;
-        }
-
-        /* Orientation message */
+        /* Orientation message styling */
         .orientation-message {
             display: none;
             text-align: center;
-            background: #f5f5f5;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            color: #666;
+            background: linear-gradient(45deg, #FFE4B5, #FFDAB9);
+            padding: 15px;
+            margin: 10px 0 20px 0;
+            border-radius: 12px;
+            color: #8B4513;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 2px 10px rgba(139, 69, 19, 0.2);
+            animation: orientationPulse 2s infinite;
+            border: 2px solid #DEB887;
+        }
+
+        @keyframes orientationPulse {
+            0% { 
+                transform: scale(1);
+                background: linear-gradient(45deg, #FFE4B5, #FFDAB9);
+            }
+            50% { 
+                transform: scale(1.02);
+                background: linear-gradient(45deg, #FFDAB9, #FFE4B5);
+                box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+            }
+            100% { 
+                transform: scale(1);
+                background: linear-gradient(45deg, #FFE4B5, #FFDAB9);
+            }
         }
 
         @media (max-width: 768px) and (orientation: portrait) {
@@ -773,7 +775,7 @@
 <body>
     <div class="game-container">
         <div class="orientation-message">
-            📱 Tip: View in landscape orientation for best experience
+            📱 Tip: Rotate your device to landscape mode for the best experience! 🔄
         </div>
         <div class="title-section">
             <h1>💪 Muscle Miner 🏋️‍♂️</h1>
