@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0QPL0L9DRB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0QPL0L9DRB');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muscle Miner</title>
+    <style>
+        /* CSS Variables */
+        :root {
+            --cave-brown: #8B4513;
+            --cave-dark: #2C1810;
+            --button-color: #4A2511;
+            --button-hover: #6B3415;
+            --muscle-zone-line: #ff4444;
+        }
+
+        /* Add iOS-specific fixes at the top of the style section */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            min-height: -webkit-fill-available;  /* iOS height fix */
+            overflow-x: hidden;  /* Prevent horizontal scroll */
+        }
+
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--button-color);
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .stat-value {
+            color: #8B4513;  /* Warmer brown color */
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        .stat-value.highlight {
+            animation: pulse 0.5s ease;
+            color: #D2691E;  /* Chocolate color for highlight */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); color: #CD853F; }  /* Peru color for mid-animation */
+            100% { transform: scale(1); }
+        }
+
+        .fatigue-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-grow: 2;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--button-color);
+        }
+
+        .fatigue-bar {
+            flex-grow: 1;
+            height: 30px;
+            background-color: #f5f5f5;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 200px;
+        }
+
+        #fatigue-level {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444 0%, #ff6b6b 100%);
+            transition: width 0.5s ease;
+            box-shadow: 2px 0 10px rgba(255, 68, 68, 0.3);
+        }
+
+        .fatigue-percentage {
+            min-width: 70px;
+            text-align: right;
+            color: #8B4513;  /* Matching warm brown */
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .fatigue-percentage.highlight {
+            animation: pulse 0.5s ease;
+            color: #D2691E;  /* Matching chocolate color */
+        }
+
+        .game-area {
+            height: 300px;
+            background-color: var(--cave-dark);
+            position: relative;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tunnel-section {
+            position: relative;
+            background-color: var(--cave-brown);
+            overflow: hidden;
+            flex: 1;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(44, 24, 16, 0.4) 10%, transparent 30%),
+                radial-gradient(circle at 20% 30%, rgba(44, 24, 16, 0.3) 5%, transparent 15%),
+                radial-gradient(circle at 70% 60%, rgba(44, 24, 16, 0.3) 8%, transparent 20%),
+                radial-gradient(circle at 90% 20%, rgba(44, 24, 16, 0.35) 6%, transparent 18%),
+                radial-gradient(circle at 10% 80%, rgba(44, 24, 16, 0.3) 7%, transparent 17%),
+                radial-gradient(circle at 40% 85%, rgba(44, 24, 16, 0.35) 9%, transparent 19%),
+                linear-gradient(45deg, 
+                    rgba(44, 24, 16, 0.2) 25%, 
+                    transparent 25%, 
+                    transparent 75%, 
+                    rgba(44, 24, 16, 0.2) 75%
+                ),
+                linear-gradient(-45deg, 
+                    rgba(44, 24, 16, 0.1) 25%, 
+                    transparent 25%, 
+                    transparent 75%, 
+                    rgba(44, 24, 16, 0.1) 75%
+                );
+            background-size: 
+                100px 100px,
+                70px 70px,
+                85px 85px,
+                65px 65px,
+                75px 75px,
+                80px 80px,
+                50px 50px,
+                50px 50px;
+            background-position: 
+                0 0,
+                20px 30px,
+                50px 60px,
+                10px 40px,
+                30px 20px,
+                40px 50px,
+                0 0,
+                25px 25px;
+        }
+
+        .tunnel-section.middle {
+            flex: 1.5;
+            clip-path: polygon(
+                0% 0%,
+                4% 4%,
+                8% 0%,
+                12% 4%,
+                16% 0%,
+                20% 4%,
+                24% 0%,
+                28% 4%,
+                32% 0%,
+                36% 4%,
+                40% 0%,
+                44% 4%,
+                48% 0%,
+                52% 4%,
+                56% 0%,
+                60% 4%,
+                64% 0%,
+                68% 4%,
+                72% 0%,
+                76% 4%,
+                80% 0%,
+                84% 4%,
+                88% 0%,
+                92% 4%,
+                96% 0%,
+                100% 4%,
+                100% 96%,
+                96% 100%,
+                92% 96%,
+                88% 100%,
+                84% 96%,
+                80% 100%,
+                76% 96%,
+                72% 100%,
+                68% 96%,
+                64% 100%,
+                60% 96%,
+                56% 100%,
+                52% 96%,
+                48% 100%,
+                44% 96%,
+                40% 100%,
+                36% 96%,
+                32% 100%,
+                28% 96%,
+                24% 100%,
+                20% 96%,
+                16% 100%,
+                12% 96%,
+                8% 100%,
+                4% 96%,
+                0% 100%
+            );
+        }
+
+        .tunnel-section.top {
+            clip-path: polygon(
+                0% 100%,
+                4% 96%,
+                8% 100%,
+                12% 96%,
+                16% 100%,
+                20% 96%,
+                24% 100%,
+                28% 96%,
+                32% 100%,
+                36% 96%,
+                40% 100%,
+                44% 96%,
+                48% 100%,
+                52% 96%,
+                56% 100%,
+                60% 96%,
+                64% 100%,
+                68% 96%,
+                72% 100%,
+                76% 96%,
+                80% 100%,
+                84% 96%,
+                88% 100%,
+                92% 96%,
+                96% 100%,
+                100% 96%,
+                100% 0%,
+                0% 0%
+            );
+        }
+
+        .tunnel-section.bottom {
+            clip-path: polygon(
+                0% 0%,
+                4% 4%,
+                8% 0%,
+                12% 4%,
+                16% 0%,
+                20% 4%,
+                24% 0%,
+                28% 4%,
+                32% 0%,
+                36% 4%,
+                40% 0%,
+                44% 4%,
+                48% 0%,
+                52% 4%,
+                56% 0%,
+                60% 4%,
+                64% 0%,
+                68% 4%,
+                72% 0%,
+                76% 4%,
+                80% 0%,
+                84% 4%,
+                88% 0%,
+                92% 4%,
+                96% 0%,
+                100% 4%,
+                100% 100%,
+                0% 100%
+            );
+        }
+
+        .tunnel {
+            position: absolute;
+            height: 100%;
+            background-color: #ffffff;
+            left: 0;
+            width: 10%;  /* Start with some initial tunnel width */
+            transition: width 0.3s ease;
+        }
+
+        .muscle-zone-line {
+            position: absolute;
+            right: 12%;  /* Changed from 20% to 12% - red line at 88% mark */
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--muscle-zone-line);
+            box-shadow: 0 0 10px var(--muscle-zone-line);
+            z-index: 5;
+        }
+
+        .muscle-zone {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 12%;
+            background-color: #B0E2FF;
+            background-image: 
+                linear-gradient(45deg, transparent 45%, #A1D6FF 45%, #A1D6FF 55%, transparent 55%),
+                linear-gradient(-45deg, transparent 45%, #A1D6FF 45%, #A1D6FF 55%, transparent 55%),
+                radial-gradient(circle at center, #A1D6FF 0%, transparent 60%);
+            background-size: 30px 30px, 30px 30px, 60px 60px;
+            background-position: 0 0, 0 0, center;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            place-items: center;
+            font-size: 2.2em;
+            z-index: 3;
+        }
+
+        .muscle-zone span {
+            text-shadow: 0 0 5px #fff, 
+                         0 0 10px #fff,
+                         0 0 15px #fff;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .miner {
+            position: absolute;
+            left: 8%;
+            bottom: 20px;
+            transition: left 0.3s ease;
+            display: flex;
+            align-items: center;
+            z-index: 4;
+            font-size: 2.5em;
+        }
+
+        .miner.swing {
+            animation: swing 0.3s ease;
+        }
+
+        @keyframes swing {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-45deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: var(--button-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        .menu {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feedback {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: white;
+            margin-top: 20px;
+        }
+
+        /* Add styles for selected rest options */
+        button.selected {
+            background-color: #6B3415;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+            transform: scale(0.98);
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title-section h1 {
+            font-size: 2.5em;
+            color: var(--button-color);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .title-section .tagline {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .instructions {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .instructions h2 {
+            color: var(--button-color);
+            margin: 0 0 15px 0;
+            font-size: 1.4em;
+            text-align: center;
+        }
+
+        .instructions ul {
+            margin: 0;
+            padding-left: 25px;
+            line-height: 1.6;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .instructions li:first-child {
+            color: #4A2511;
+            font-weight: 600;
+            background: #f5f5f5;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 5px -5px;
+        }
+
+        .instructions li:first-child strong {
+            color: #4A2511;
+            font-size: 1.1em;
+        }
+
+        /* Add modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #rest-menu {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            margin: 0;
+        }
+
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-options h3 {
+            margin: 10px 0;
+            color: var(--button-color);
+        }
+
+        .option-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .option-group button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        #submit-rest-button {
+            margin-top: 20px;
+            width: 100%;
+            background-color: var(--button-color);
+            font-size: 1.1em;
+            padding: 15px;
+        }
+
+        /* Regular success popup styles */
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: var(--button-color);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1001;
+            animation: popIn 0.5s ease-out;
+            border: 2px solid #f0f0f0;
+        }
+
+        /* Final victory popup style */
+        .success-popup.victory {
+            background: linear-gradient(135deg, #2E8B57, #3CB371);
+            color: white;
+            border: none;
+        }
+
+        .success-popup h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.6em;
+            color: inherit;
+        }
+
+        .success-popup p {
+            margin: 8px 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .success-popup button {
+            margin-top: 15px;
+            background-color: var(--button-color);
+            color: white;
+            font-weight: 600;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .success-popup button:hover {
+            transform: scale(1.05);
+            background-color: var(--button-hover);
+        }
+
+        /* Victory popup specific button style */
+        .success-popup.victory button {
+            background-color: white;
+            color: #2E8B57;
+        }
+
+        .success-popup.victory button:hover {
+            background-color: #f0f0f0;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        /* Add pulsing animation for the action button */
+        @keyframes buttonPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 37, 17, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(74, 37, 17, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 37, 17, 0); }
+        }
+
+        #action-button {
+            animation: buttonPulse 2s infinite;
+        }
+
+        #action-button:hover {
+            animation: none;
+            transform: scale(1.05);
+        }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .game-container {
+                padding: 15px;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .stat-item {
+                justify-content: center;
+            }
+
+            .fatigue-container {
+                width: 100%;
+            }
+
+            .game-area {
+                height: 200px;  /* Shorter on mobile */
+            }
+
+            .miner {
+                font-size: 2em;  /* Smaller emoji on mobile */
+            }
+
+            .muscle-zone {
+                font-size: 1.8em;  /* Smaller emojis in muscle zone */
+            }
+
+            button {
+                padding: 15px;  /* Larger touch targets */
+                min-width: 120px;
+            }
+
+            .option-group {
+                grid-template-columns: 1fr;  /* Stack buttons on mobile */
+            }
+
+            /* Fix for iOS modal positioning */
+            .success-popup {
+                position: fixed;
+                width: 85%;
+                max-width: 320px;
+                max-height: 90vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* Fix for iOS button styling */
+        button {
+            -webkit-appearance: none;
+            appearance: none;
+            border-radius: 5px;
+        }
+
+        /* Fix for iOS scrolling */
+        .rest-menu {
+            -webkit-overflow-scrolling: touch;
+            max-height: 80vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="title-section">
+            <h1>💪 Muscle Miner 🏋️‍♂️</h1>
+            <div class="tagline">Dig Deep, Hit the Muscle Zone, Grow Strong!</div>
+        </div>
+
+        <div class="instructions">
+            <h2>🎯 Goal: Reach 100 lbs Muscle Mass in 7 Days!</h2>
+            <ul>
+                <li><strong>Daily Choice (Select Below):</strong> Mine (workout) or Rest</li>
+                <li><strong>Muscle Growth:</strong> Reach the blue zone to gain 2 lbs of muscle!</li>
+                <li><strong>Watch Your Fatigue:</strong> You won't be able to mine if you're too fatigued!</li>
+            </ul>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                Day: <div class="stat-value" id="day">1</div>/7
+            </div>
+            <div class="stat-item">
+                Muscle Mass: <div class="stat-value" id="muscle-mass">92</div> lbs 💪
+            </div>
+            <div class="fatigue-container">
+                Fatigue:
+                <div class="fatigue-bar">
+                    <div id="fatigue-level"></div>
+                </div>
+                <div class="fatigue-percentage">0%</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="tunnel-section top"></div>
+            <div class="tunnel-section middle">
+                <div class="tunnel" id="tunnel"></div>
+                <div class="muscle-zone-line"></div>
+                <div class="miner" id="miner">👷⛏️</div>
+                <div class="muscle-zone">
+                    <span>💪</span>
+                    <span>💪</span>
+                    <span>💪</span>
+                    <span>💪</span>
+                </div>
+            </div>
+            <div class="tunnel-section bottom"></div>
+        </div>
+
+        <div class="controls">
+            <button id="action-button">What would you like to do today?</button>
+            <button id="rep-button" style="display: none;">Do Rep! (~10% Fatigue)</button>
+            <button id="sleep-button" style="display: none;">Sleep to End Day</button>
+        </div>
+
+        <div id="action-menu" class="menu">
+            <h2>Choose Your Action</h2>
+            <div class="menu-options">
+                <button data-action="mine">Mine (Workout) (~10% Fatigue per Rep)</button>
+                <button data-action="rest">Rest</button>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="rest-modal">
+            <div id="rest-menu" class="menu">
+                <h2>Rest Options</h2>
+                <div class="menu-options">
+                    <h3>Physical Expenditure:</h3>
+                    <div class="option-group">
+                        <button data-expenditure="sedentary">Sedentary Rest</button>
+                        <button data-expenditure="light">Light Active Recovery</button>
+                        <button data-expenditure="heavy">Heavy Cardio</button>
+                    </div>
+                    
+                    <h3>Diet Choice:</h3>
+                    <div class="option-group">
+                        <button data-diet="low">Low Calorie</button>
+                        <button data-diet="protein">High Protein</button>
+                        <button data-diet="carb">High Carb</button>
+                    </div>
+
+                    <button id="submit-rest-button" style="display: none;">Submit Rest Options & Sleep</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <script>
+        class Game {
+            constructor() {
+                this.position = 60;
+                this.totalDistance = 400;
+                this.fatigue = 0;
+                this.currentDay = 1;
+                this.lastWorkoutDay = 0;
+                this.muscleMass = 92;  // Starting at 92 lbs
+                this.goalMass = 100;   // Goal is 100 lbs
+                this.currentExpenditure = null;
+                this.currentDiet = null;
+                
+                // DOM elements
+                this.miner = document.getElementById('miner');
+                this.tunnel = document.getElementById('tunnel');
+                this.fatigueLevel = document.getElementById('fatigue-level');
+                this.fatiguePercentage = document.querySelector('.fatigue-percentage');
+                this.muscleMassElement = document.getElementById('muscle-mass');
+                this.dayElement = document.getElementById('day');
+                this.actionButton = document.getElementById('action-button');
+                this.repButton = document.getElementById('rep-button');
+                this.sleepButton = document.getElementById('sleep-button');
+                this.submitRestButton = document.getElementById('submit-rest-button');
+                this.actionMenu = document.getElementById('action-menu');
+                this.restMenu = document.getElementById('rest-menu');
+                this.feedback = document.getElementById('feedback');
+                this.restModal = document.getElementById('rest-modal');
+
+                this.setupEventListeners();
+                this.updateUI();
+                this.initializePosition();
+
+                // Stop pulsing animation when any action is taken
+                this.actionButton.addEventListener('click', () => {
+                    this.actionButton.style.animation = 'none';
+                });
+            }
+
+            setupEventListeners() {
+                this.actionButton.addEventListener('click', () => this.showActionMenu());
+                this.repButton.addEventListener('click', () => this.doRep());
+                this.sleepButton.addEventListener('click', () => this.sleep(true));
+                this.submitRestButton.addEventListener('click', () => this.handleSubmitRest());
+
+                document.querySelectorAll('[data-action]').forEach(button => {
+                    button.addEventListener('click', (e) => this.handleAction(e.target.dataset.action));
+                });
+
+                document.querySelectorAll('[data-expenditure]').forEach(button => {
+                    button.addEventListener('click', (e) => this.handleExpenditure(e.target.dataset.expenditure));
+                });
+
+                document.querySelectorAll('[data-diet]').forEach(button => {
+                    button.addEventListener('click', (e) => this.handleDiet(e.target.dataset.diet));
+                });
+            }
+
+            showActionMenu() {
+                this.actionMenu.style.display = 'block';
+                this.actionButton.style.display = 'none';
+            }
+
+            handleAction(action) {
+                this.actionMenu.style.display = 'none';
+                if (action === 'mine') {
+                    // Check if there's enough energy to start mining
+                    if (this.fatigue >= 90) {  // Leave some buffer for the last rep
+                        this.showFeedback("You're too fatigued to mine today! Take some rest to recover energy. 😓", "warning");
+                        this.actionButton.style.display = 'block';
+                        return;
+                    }
+                    
+                    this.repButton.style.display = 'block';
+                    this.sleepButton.style.display = 'none';  // Hide sleep button initially
+                    this.submitRestButton.style.display = 'none';
+                    this.repButton.textContent = `Do Rep! (~10% Fatigue)`;
+                    
+                    if (this.currentDay - this.lastWorkoutDay === 2) {
+                        // Optimal rest period
+                        this.showFeedback("Perfect rest timing! Your muscles are fully recovered! 💪", "success");
+                    }
+                    this.lastWorkoutDay = this.currentDay;
+                } else if (action === 'rest') {
+                    // Reset any previous selections
+                    this.currentExpenditure = null;
+                    this.currentDiet = null;
+                    this.submitRestButton.style.display = 'none';
+                    document.querySelectorAll('[data-expenditure], [data-diet]').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    
+                    // Show the rest modal
+                    this.restModal.style.display = 'flex';
+                    this.restMenu.style.display = 'block';
+                    this.sleepButton.style.display = 'none';
+                }
+            }
+
+            handleExpenditure(type) {
+                // Remove selected class from all expenditure buttons
+                document.querySelectorAll('[data-expenditure]').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                // Add selected class to clicked button
+                document.querySelector(`[data-expenditure="${type}"]`).classList.add('selected');
+                
+                this.currentExpenditure = type;
+                this.checkRestOptions();
+            }
+
+            handleDiet(type) {
+                // Remove selected class from all diet buttons
+                document.querySelectorAll('[data-diet]').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                // Add selected class to clicked button
+                document.querySelector(`[data-diet="${type}"]`).classList.add('selected');
+                
+                this.currentDiet = type;
+                this.checkRestOptions();
+            }
+
+            checkRestOptions() {
+                // Show submit button only when both options are selected
+                if (this.currentExpenditure && this.currentDiet) {
+                    this.submitRestButton.style.display = 'block';
+                }
+            }
+
+            handleSubmitRest() {
+                let fatigueMultiplier = 1; // Start at 100% of current fatigue
+
+                // Process expenditure choice - percentage based
+                if (this.currentExpenditure === 'heavy') {
+                    fatigueMultiplier += 0.15; // Increases fatigue by 15%
+                } else if (this.currentExpenditure === 'sedentary') {
+                    fatigueMultiplier -= 0.10; // Reduces fatigue by 10%
+                } else if (this.currentExpenditure === 'light') {
+                    fatigueMultiplier -= 0.46; // Reduces fatigue by 46%
+                }
+
+                // Process diet choice - percentage based
+                if (this.currentDiet === 'low') {
+                    fatigueMultiplier += 0.10; // Increases fatigue by 10%
+                } else if (this.currentDiet === 'protein') {
+                    fatigueMultiplier -= 0.40; // Reduces fatigue by 40%
+                } else if (this.currentDiet === 'carb') {
+                    fatigueMultiplier -= 0.15; // Reduces fatigue by 15%
+                }
+
+                // Check for optimal combination
+                if (this.currentExpenditure === 'light' && this.currentDiet === 'protein') {
+                    this.showFeedback("Perfect recovery choices! Maximum recovery achieved! 💪", "success");
+                } else {
+                    this.showFeedback("Sub-optimal recovery. Try light activity with high protein! 🤔", "info");
+                }
+
+                // Apply the multiplier to current fatigue
+                this.fatigue = Math.max(0, this.fatigue * fatigueMultiplier);
+                
+                // Update UI and reset position
+                this.position = 60;
+                this.initializePosition();
+                this.updateUI();
+
+                // Hide all menus and buttons
+                this.restModal.style.display = 'none';
+                this.restMenu.style.display = 'none';
+                this.actionMenu.style.display = 'none';
+                this.submitRestButton.style.display = 'none';
+                
+                // Reset selections
+                this.currentExpenditure = null;
+                this.currentDiet = null;
+                document.querySelectorAll('[data-expenditure], [data-diet]').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+
+                // Advance the day and check for game end
+                this.currentDay++;
+                if (this.currentDay > 7) {
+                    this.endGame();
+                } else {
+                    // Show action button for next day
+                    this.actionButton.style.display = 'block';
+                    this.dayElement.textContent = this.currentDay;
+                    // Show appropriate fatigue message for next day
+                    this.showFeedback(this.getFatigueMessage(), "info");
+                }
+            }
+
+            initializePosition() {
+                const initialProgress = (this.position / this.totalDistance * 100);
+                this.miner.style.left = `${initialProgress - 12}%`;  // Increased offset from 8% to 12%
+                this.tunnel.style.width = `${initialProgress}%`;
+            }
+
+            doRep() {
+                // Check if doing this rep would exceed fatigue limit
+                if (this.fatigue + 9.6 > 100) {
+                    this.showFeedback("You don't have enough energy for another rep! Time to rest. 😓", "warning");
+                    this.repButton.disabled = true;
+                    this.sleepButton.style.display = 'block';
+                    return;
+                }
+
+                const distance = 32;
+                this.position += distance;
+                this.fatigue += 9.6;
+                
+                this.miner.classList.add('swing');
+                setTimeout(() => this.miner.classList.remove('swing'), 300);
+                
+                const progress = (this.position / this.totalDistance * 100);
+                
+                let tunnelWidth, minerPosition;
+                
+                if (progress >= 88) {
+                    tunnelWidth = 88;
+                    minerPosition = 80;
+                } else {
+                    tunnelWidth = progress;
+                    minerPosition = progress - 12;
+                }
+                
+                this.miner.style.left = `${minerPosition}%`;
+                this.tunnel.style.width = `${tunnelWidth}%`;
+                
+                this.updateUI();
+
+                if (minerPosition >= 80) {
+                    this.repButton.style.display = 'none';
+                    this.gainMuscleMass();
+                    this.showSuccessPopup();
+                }
+            }
+
+            gainMuscleMass() {
+                this.muscleMass += 2;
+                this.muscleMassElement.textContent = this.muscleMass;
+                
+                // Calculate remaining pounds needed
+                const remainingLbs = this.goalMass - this.muscleMass;
+                const remainingDays = 7 - this.currentDay;
+                
+                if (remainingLbs <= 0) {
+                    this.showFeedback(`🎉 Amazing work! You've reached your goal of ${this.goalMass} lbs! Keep pushing for even more gains!`, "success");
+                } else if (remainingDays > 0) {
+                    this.showFeedback(`💪 Great work! You gained 2 lbs of muscle! You need ${remainingLbs} more pounds in ${remainingDays} days to reach your goal.`, "success");
+                } else {
+                    this.showFeedback(`💪 You gained 2 lbs of muscle! Today is the last day to reach your goal!`, "success");
+                }
+            }
+
+            sleep(isMiningDay) {
+                if (isMiningDay) {
+                    this.fatigue = Math.max(0, this.fatigue - 79);
+                }
+                
+                // Hide all menus and buttons
+                this.restModal.style.display = 'none';
+                this.restMenu.style.display = 'none';
+                this.actionMenu.style.display = 'none';
+                this.repButton.style.display = 'none';
+                this.sleepButton.style.display = 'none';
+                this.submitRestButton.style.display = 'none';
+                
+                // Reset position
+                this.position = 60;
+                this.initializePosition();
+                
+                // Advance the day and update UI
+                this.currentDay++;
+                if (this.currentDay > 7) {
+                    this.endGame();
+                } else {
+                    this.updateUI();
+                    // Show action button for next day
+                    this.actionButton.style.display = 'block';
+                    this.showFeedback(this.getFatigueMessage(), "info");
+                }
+            }
+
+            getFatigueMessage() {
+                if (this.fatigue < 5) return "Muscles feeling fresh and ready! 💪";
+                if (this.fatigue < 20) return "Some fatigue, but manageable... 😅";
+                if (this.fatigue < 30) return "High fatigue - consider resting... 😓";
+                return "Extreme fatigue! Must rest! 😫";
+            }
+
+            showFeedback(message, type) {
+                this.feedback.textContent = message;
+                this.feedback.className = `feedback ${type}`;
+            }
+
+            updateUI() {
+                const fatiguePercentage = Math.min(Math.round(this.fatigue), 100);
+                
+                // Update fatigue with animation
+                this.fatigueLevel.style.width = `${fatiguePercentage}%`;
+                const fatigueElement = this.fatiguePercentage;
+                if (fatigueElement.textContent !== `${fatiguePercentage}%`) {
+                    fatigueElement.classList.add('highlight');
+                    setTimeout(() => fatigueElement.classList.remove('highlight'), 500);
+                }
+                fatigueElement.textContent = `${fatiguePercentage}%`;
+                
+                // Update muscle mass with animation
+                const massElement = this.muscleMassElement;
+                if (massElement.textContent !== String(this.muscleMass)) {
+                    massElement.classList.add('highlight');
+                    setTimeout(() => massElement.classList.remove('highlight'), 500);
+                }
+                massElement.textContent = this.muscleMass;
+                
+                // Update day with animation
+                const dayElement = this.dayElement;
+                if (dayElement.textContent !== String(this.currentDay)) {
+                    dayElement.classList.add('highlight');
+                    setTimeout(() => dayElement.classList.remove('highlight'), 500);
+                }
+                dayElement.textContent = this.currentDay;
+                
+                if (this.fatigue >= 100) {
+                    this.repButton.disabled = true;
+                    this.sleepButton.style.display = 'block';  // Show sleep button when max fatigue reached
+                    this.showFeedback("Too fatigued to continue! Time to rest. 😓", "warning");
+                } else {
+                    this.repButton.disabled = false;
+                }
+            }
+
+            endGame() {
+                const finalScore = document.createElement('div');
+                finalScore.className = 'feedback';
+                const goalAchieved = this.muscleMass >= this.goalMass;
+                const massGained = this.muscleMass - 92;
+                
+                finalScore.innerHTML = `
+                    <h2>Training Period Complete!</h2>
+                    <p>Starting Mass: 92 lbs</p>
+                    <p>Final Muscle Mass: ${this.muscleMass} lbs 💪</p>
+                    <p>Mass Gained: ${massGained} lbs</p>
+                    <p>Goal: ${this.goalMass} lbs</p>
+                    ${goalAchieved 
+                        ? '<p style="color: #2E8B57; font-weight: bold">🎉 Congratulations! You reached your goal! 🎉</p>'
+                        : `<p style="color: #CD5C5C">Goal not reached. You were ${this.goalMass - this.muscleMass} lbs away!</p>`
+                    }
+                    <button id="replay-button" style="margin-top: 20px;">Play Again</button>
+                `;
+                this.feedback.replaceWith(finalScore);
+                this.actionButton.style.display = 'none';
+
+                // Add event listener for the replay button
+                document.getElementById('replay-button').addEventListener('click', () => {
+                    location.reload();
+                });
+            }
+
+            showSuccessPopup() {
+                const popup = document.createElement('div');
+                popup.className = 'success-popup';
+                
+                const remainingLbs = this.goalMass - this.muscleMass;
+                const remainingDays = 7 - this.currentDay;
+                
+                let message = '';
+                if (remainingLbs <= 0) {
+                    message = `You've reached your goal of ${this.goalMass} lbs! 🎯`;
+                } else if (remainingDays > 0) {
+                    message = `You need ${remainingLbs} more pounds in ${remainingDays} days.`;
+                } else {
+                    message = `Final day - make it count!`;
+                }
+
+                popup.innerHTML = `
+                    <h2>Nice Work!</h2>
+                    <p>You've reached the growth zone.</p>
+                    <p>+2 lbs muscle gained</p>
+                    <p>Fatigue: ${Math.round(this.fatigue)}%</p>
+                    <p>${message}</p>
+                    <button id="success-sleep-button">Sleep & Continue</button>
+                `;
+
+                document.body.appendChild(popup);
+
+                document.getElementById('success-sleep-button').addEventListener('click', () => {
+                    popup.remove();
+                    this.sleep(true);
+                });
+            }
+        }
+
+        // Start the game when the page loads
+        window.addEventListener('load', () => {
+            new Game();
+        });
+    </script>
+</body>
+</html> 
