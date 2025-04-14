@@ -11,7 +11,7 @@
       gtag('config', 'G-0QPL0L9DRB');
     </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Muscle Miner</title>
     <style>
         /* CSS Variables */
@@ -643,6 +643,7 @@
         @media (max-width: 768px) {
             body {
                 padding: 10px;
+                touch-action: manipulation;
             }
 
             .game-container {
@@ -676,22 +677,42 @@
             }
 
             button {
-                padding: 15px;  /* Larger touch targets */
-                min-width: 120px;
+                min-height: 44px; /* iOS minimum touch target size */
+                font-size: 16px; /* Prevent iOS zoom on input */
+                touch-action: manipulation;
+            }
+
+            #rest-menu {
+                width: 85%;
+                max-width: none;
+                margin: 10px auto;
             }
 
             .option-group {
-                grid-template-columns: 1fr;  /* Stack buttons on mobile */
+                flex-direction: column;
             }
 
-            /* Fix for iOS modal positioning */
-            .success-popup {
-                position: fixed;
-                width: 85%;
-                max-width: 320px;
-                max-height: 90vh;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
+            .option-group button {
+                width: 100%;
+                margin: 4px 0;
+            }
+
+            .modal-overlay {
+                align-items: flex-start;
+                padding: 20px 0;
+            }
+
+            #submit-rest-button {
+                position: sticky;
+                bottom: 0;
+                background: white;
+                padding: 15px;
+                margin: 0;
+                border-top: 1px solid #eee;
+            }
+
+            .menu-options {
+                padding-bottom: 60px; /* Space for sticky submit button */
             }
         }
 
@@ -707,10 +728,53 @@
             -webkit-overflow-scrolling: touch;
             max-height: 80vh;
         }
+
+        /* Rest popup improvements */
+        #rest-menu {
+            max-height: 80vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .menu-options {
+            gap: 10px;
+        }
+
+        .option-group {
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .option-group button {
+            padding: 12px;
+            font-size: 0.95em;
+        }
+
+        /* Orientation message */
+        .orientation-message {
+            display: none;
+            text-align: center;
+            background: #f5f5f5;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+            .orientation-message {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
+        <div class="orientation-message">
+            📱 Tip: View in landscape orientation for best experience
+        </div>
         <div class="title-section">
             <h1>💪 Muscle Miner 🏋️‍♂️</h1>
             <div class="tagline">Dig Deep, Hit the Muscle Zone, Grow Strong!</div>
