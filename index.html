@@ -509,6 +509,8 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            -webkit-overflow-scrolling: touch; /* Enable momentum scrolling on iOS */
+            overflow-y: auto;
         }
 
         #rest-menu {
@@ -520,7 +522,9 @@
             width: 85%;
             max-width: 400px;
             position: relative;
-            margin: 15px;
+            margin: 15px auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* Enable momentum scrolling on iOS */
         }
 
         .menu-options {
@@ -686,18 +690,18 @@
             }
 
             #rest-menu {
-                width: 80%;
-                padding: 12px;
-                margin: 8px auto;
+                max-height: 85vh; /* Slightly increased for better visibility */
+                margin: 20px auto;
+                padding-bottom: 70px; /* Space for the sticky button */
             }
 
             .option-group {
-                flex-direction: column;
+                margin-bottom: 15px;
             }
 
             .option-group button {
-                width: 100%;
-                margin: 4px 0;
+                margin: 5px 0;
+                min-height: 44px;
             }
 
             .modal-overlay {
@@ -706,17 +710,21 @@
             }
 
             #submit-rest-button {
-                position: sticky;
-                bottom: 0;
-                background-color: var(--button-color);
-                color: white;
-                padding: 12px;
-                margin: 0;
-                border-top: 1px solid #eee;
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(85% - 30px);
+                max-width: 370px;
+                z-index: 1001;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             }
 
             .menu-options {
-                padding-bottom: 50px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 60px;
             }
         }
 
